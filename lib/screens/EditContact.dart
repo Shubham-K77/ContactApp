@@ -1,39 +1,65 @@
-//Imports
-
-// ignore_for_file: unnecessary_null_comparison, unused_element
-
+// Imports
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
-//Stateful Widget
-class AddContactScreen extends StatefulWidget {
-  const AddContactScreen({super.key});
+//Creating the Stateful Widget
+class EditContactScreen extends StatefulWidget {
+  //Data That Will Be Received
+  final File? image;
+  final String phone;
+  final String email;
+  final String address;
+  //Contructor With The Passed Values
+  EditContactScreen({
+    super.key,
+    this.image,
+    required this.phone,
+    required this.email,
+    required this.address,
+  });
+  //Creating the state
   @override
-  State<AddContactScreen> createState() => _AddContactScreenState();
+  State<EditContactScreen> createState() => _EditContactScreenState();
 }
 
-class _AddContactScreenState extends State<AddContactScreen> {
-  //State Variables
-  String phone = "";
-  String email = "";
-  String address = "";
-  //File Functionality
-  File? _image;
+//Creating the Widget
+class _EditContactScreenState extends State<EditContactScreen> {
+  //State Varaiables
+  File? image;
+  String? phone;
+  String? email;
+  String? address;
+
+  //Controllers To Display The Value In The Form
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+  late TextEditingController addressController;
+
+  void initState() {
+    super.initState();
+    //Init code
+    image = widget.image;
+    phone = widget.phone;
+    email = widget.email;
+    address = widget.address;
+    phoneController = TextEditingController(text: phone);
+    emailController = TextEditingController(text: email);
+    addressController = TextEditingController(text: address);
+  }
+
+  //For picking the image
   final _picker = ImagePicker();
   pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        image = File(pickedFile.path);
       });
     }
   }
 
-  //Building The Screen
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -57,7 +83,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     border: Border(
-                      bottom: BorderSide(color: Colors.greenAccent, width: 1.0),
+                      bottom: BorderSide(color: Colors.blueAccent, width: 1.0),
                     ),
                   ),
                   child: Column(
@@ -75,14 +101,14 @@ class _AddContactScreenState extends State<AddContactScreen> {
                             color: Colors.blueGrey.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(
-                              color: Colors.greenAccent,
+                              color: Colors.blueAccent,
                               width: 1.0,
                             ),
                           ),
                           child: Center(
                             child: Icon(
                               Icons.arrow_back,
-                              color: Colors.green,
+                              color: Colors.blue,
                               size: 22,
                             ),
                           ),
@@ -90,9 +116,9 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        "Create A New Contact",
+                        "Edit The Contact",
                         style: GoogleFonts.inter(
-                          color: Colors.greenAccent,
+                          color: Colors.blueAccent,
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
                         ),
@@ -102,7 +128,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 ),
                 SizedBox(height: 15),
                 // Render The Fields
-                _image != null
+                image != null
                     ? Container(
                       width: 150,
                       height: 145,
@@ -110,7 +136,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(75),
                         image: DecorationImage(
-                          image: FileImage(_image!),
+                          image: FileImage(image!),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -127,7 +153,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                           borderRadius: BorderRadius.circular(4),
                           color: Colors.blueGrey.withOpacity(0.2),
                           border: Border.all(
-                            color: Colors.greenAccent,
+                            color: Colors.blueAccent,
                             width: 1.0,
                           ),
                         ),
@@ -138,7 +164,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                             Icon(
                               Icons.image,
                               size: 22,
-                              color: Colors.greenAccent,
+                              color: Colors.blueAccent,
                             ),
                             SizedBox(width: 25),
                             Text(
@@ -146,7 +172,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                               style: GoogleFonts.inter(
                                 fontSize: 16.16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.greenAccent,
+                                color: Colors.blueAccent,
                               ),
                             ),
                           ],
@@ -157,6 +183,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 Container(
                   width: 300,
                   child: TextField(
+                    controller: phoneController,
                     style: GoogleFonts.inter(
                       color:
                           Colors.white, // 👈 change this to any color you want
@@ -169,28 +196,28 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: "Add a phone number",
+                      hintText: phone,
                       hintStyle: GoogleFonts.inter(
                         fontSize: 15.15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       prefixIcon: Icon(
                         Icons.phone,
                         size: 22,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent, // Your desired color
+                          color: Colors.blueAccent, // Your desired color
                           width: 1.0,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent,
+                          color: Colors.blueAccent,
                           width: 2.0,
                         ),
                       ),
@@ -203,6 +230,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 Container(
                   width: 300,
                   child: TextField(
+                    controller: emailController,
                     style: GoogleFonts.inter(
                       color:
                           Colors.white, // 👈 change this to any color you want
@@ -215,28 +243,28 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: "Add a email address",
+                      hintText: email,
                       hintStyle: GoogleFonts.inter(
                         fontSize: 15.15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       prefixIcon: Icon(
                         Icons.email,
                         size: 22,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent, // Your desired color
+                          color: Colors.blueAccent, // Your desired color
                           width: 1.0,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent,
+                          color: Colors.blueAccent,
                           width: 2.0,
                         ),
                       ),
@@ -249,40 +277,41 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 Container(
                   width: 300,
                   child: TextField(
+                    controller: addressController,
+                    onChanged: (value) {
+                      setState(() {
+                        address = value;
+                      });
+                    },
                     style: GoogleFonts.inter(
                       color:
                           Colors.white, // 👈 change this to any color you want
                       fontSize: 15.15,
                       fontWeight: FontWeight.w600,
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        address = value;
-                      });
-                    },
                     decoration: InputDecoration(
-                      hintText: "Add a home address",
+                      hintText: address,
                       hintStyle: GoogleFonts.inter(
                         fontSize: 15.15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       prefixIcon: Icon(
                         Icons.location_city,
                         size: 22,
-                        color: Colors.greenAccent,
+                        color: Colors.blueAccent,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent, // Your desired color
+                          color: Colors.blueAccent, // Your desired color
                           width: 1.0,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         borderSide: BorderSide(
-                          color: Colors.greenAccent,
+                          color: Colors.blueAccent,
                           width: 2.0,
                         ),
                       ),
@@ -299,7 +328,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                     height: 55,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.lightGreenAccent,
+                        color: Colors.lightBlueAccent,
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(6),
@@ -310,15 +339,15 @@ class _AddContactScreenState extends State<AddContactScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.add,
-                          color: Colors.lightGreenAccent,
+                          Icons.edit,
+                          color: Colors.lightBlueAccent,
                           size: 22,
                         ),
                         SizedBox(width: 15),
                         Text(
-                          "Add New Contact",
+                          "Edit The Contact",
                           style: GoogleFonts.inter(
-                            color: Colors.lightGreenAccent,
+                            color: Colors.lightBlueAccent,
                             fontSize: 15.15,
                             fontWeight: FontWeight.w600,
                           ),

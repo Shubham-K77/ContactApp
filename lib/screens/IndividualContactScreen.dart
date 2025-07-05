@@ -1,4 +1,5 @@
 // Imports:
+import 'package:contactapp/screens/EditContact.dart';
 import 'package:contactapp/widgets/IndividualCard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,7 +64,20 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                           ),
                           SizedBox(width: 30),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => EditContactScreen(
+                                        phone: "+1(555)123-4567",
+                                        email: "john.doe@gmail.com",
+                                        address:
+                                            "123 Main St, New York, Ny 1001",
+                                      ),
+                                ),
+                              );
+                            },
                             child: Container(
                               width: 65,
                               height: 40,
@@ -135,58 +149,87 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Container(
-                      width: 310,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.blueAccent,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.edit, color: Colors.blueAccent, size: 26),
-                          SizedBox(width: 35),
-                          Text(
-                            "Edit Contact",
-                            style: GoogleFonts.inter(
-                              fontSize: 16.16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blueAccent,
-                            ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => EditContactScreen(
+                                  phone: "+1(555)123-4567",
+                                  email: "john.doe@gmail.com",
+                                  address: "123 Main St, New York, Ny 1001",
+                                ),
                           ),
-                        ],
+                        );
+                      },
+                      child: Container(
+                        width: 310,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.blueAccent,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.edit,
+                              color: Colors.blueAccent,
+                              size: 26,
+                            ),
+                            SizedBox(width: 35),
+                            Text(
+                              "Edit Contact",
+                              style: GoogleFonts.inter(
+                                fontSize: 16.16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 15),
-                    Container(
-                      width: 310,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.redAccent, width: 1.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.delete, color: Colors.redAccent, size: 26),
-                          SizedBox(width: 25),
-                          Text(
-                            "Delete Contact",
-                            style: GoogleFonts.inter(
-                              fontSize: 16.16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.redAccent,
-                            ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 310,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: Colors.redAccent,
+                            width: 1.0,
                           ),
-                        ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                              size: 26,
+                            ),
+                            SizedBox(width: 25),
+                            Text(
+                              "Delete Contact",
+                              style: GoogleFonts.inter(
+                                fontSize: 16.16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
