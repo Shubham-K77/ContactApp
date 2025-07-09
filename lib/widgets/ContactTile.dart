@@ -1,18 +1,44 @@
+import 'dart:io';
+
 import 'package:contactapp/screens/IndividualContactScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ContactTile extends StatelessWidget {
+  final int? id;
   final String name;
-  final String number;
-  ContactTile({super.key, required this.name, required this.number});
+  final String phone;
+  final String imagePath;
+  final String email;
+  final String address;
+
+  ContactTile({
+    super.key,
+    required this.name,
+    required this.phone,
+    required this.imagePath,
+    required this.email,
+    required this.address,
+    required this.id,
+  });
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => IndividualContactScreen()),
+          MaterialPageRoute(
+            builder:
+                (context) => IndividualContactScreen(
+                  name: name,
+                  phone: phone,
+                  imagePath: imagePath,
+                  email: email,
+                  address: address,
+                  id: id,
+                ),
+          ),
         );
       },
       child: Container(
@@ -36,7 +62,10 @@ class ContactTile extends StatelessWidget {
               height: 55,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
-                color: Colors.white54,
+                image: DecorationImage(
+                  image: FileImage(File(imagePath)),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Container(
@@ -57,7 +86,7 @@ class ContactTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    number,
+                    phone,
                     style: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       color: Colors.green,

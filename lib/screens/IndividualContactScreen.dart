@@ -1,4 +1,7 @@
 // Imports:
+import 'dart:io';
+
+import 'package:contactapp/db/dbHelper.dart';
 import 'package:contactapp/screens/EditContact.dart';
 import 'package:contactapp/widgets/IndividualCard.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +9,21 @@ import 'package:google_fonts/google_fonts.dart';
 
 //Stateful Widget:
 class IndividualContactScreen extends StatefulWidget {
-  const IndividualContactScreen({super.key});
+  final int? id;
+  final String name;
+  final String phone;
+  final String imagePath;
+  final String email;
+  final String address;
+  const IndividualContactScreen({
+    super.key,
+    required this.name,
+    required this.phone,
+    required this.imagePath,
+    required this.email,
+    required this.address,
+    required this.id,
+  });
   @override
   State<IndividualContactScreen> createState() =>
       _IndividualContactScreenState();
@@ -29,7 +46,16 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
               Container(
                 width: double.infinity,
                 height: 300,
-                color: Colors.amber,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File(widget.imagePath)),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black87.withOpacity(0.6),
+                      BlendMode.darken,
+                    ),
+                  ),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,8 +82,8 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                               child: Center(
                                 child: Icon(
                                   Icons.arrow_back,
-                                  color: Colors.green,
-                                  size: 22,
+                                  color: Colors.amber,
+                                  size: 26,
                                 ),
                               ),
                             ),
@@ -70,10 +96,12 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => EditContactScreen(
-                                        phone: "+1(555)123-4567",
-                                        email: "john.doe@gmail.com",
-                                        address:
-                                            "123 Main St, New York, Ny 1001",
+                                        imagePath: widget.imagePath,
+                                        name: widget.name,
+                                        phone: widget.phone,
+                                        email: widget.email,
+                                        address: widget.address,
+                                        id: widget.id,
                                       ),
                                 ),
                               );
@@ -91,7 +119,7 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                                   style: GoogleFonts.inter(
                                     fontSize: 15.15,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.green,
+                                    color: Colors.amber,
                                   ),
                                 ),
                               ),
@@ -101,7 +129,7 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                       ),
                     ),
                     Text(
-                      "John Doe",
+                      widget.name,
                       style: GoogleFonts.inter(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -123,7 +151,7 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                     SizedBox(height: 15),
                     IndividualCardTile(
                       label: "Phone",
-                      value: "+1 (555) 123-4567",
+                      value: widget.phone,
                       iconMotif: Icon(
                         Icons.phone,
                         color: Colors.greenAccent,
@@ -132,7 +160,7 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                     ),
                     IndividualCardTile(
                       label: "Email",
-                      value: "john.doe@gmail.com",
+                      value: widget.email,
                       iconMotif: Icon(
                         Icons.email,
                         color: Colors.greenAccent,
@@ -141,7 +169,7 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                     ),
                     IndividualCardTile(
                       label: "Address",
-                      value: "123 Main St, New York, Ny 1001",
+                      value: widget.address,
                       iconMotif: Icon(
                         Icons.location_city,
                         color: Colors.greenAccent,
@@ -156,9 +184,12 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                           MaterialPageRoute(
                             builder:
                                 (context) => EditContactScreen(
-                                  phone: "+1(555)123-4567",
-                                  email: "john.doe@gmail.com",
-                                  address: "123 Main St, New York, Ny 1001",
+                                  imagePath: widget.imagePath,
+                                  name: widget.name,
+                                  phone: widget.phone,
+                                  email: widget.email,
+                                  address: widget.address,
+                                  id: widget.id,
                                 ),
                           ),
                         );
@@ -198,7 +229,10 @@ class _IndividualContactScreenState extends State<IndividualContactScreen> {
                     ),
                     SizedBox(height: 15),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await DatabaseHelper().deleteContact(widget.id!);
+                        Navigator.pop(context);
+                      },
                       child: Container(
                         width: 310,
                         height: 55,

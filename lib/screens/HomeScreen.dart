@@ -1,4 +1,6 @@
 //Imports
+import "package:contactapp/db/contactSchema.dart";
+import "package:contactapp/db/dbHelper.dart";
 import "package:contactapp/screens/AddContactScreen.dart";
 import "package:contactapp/widgets/ContactTile.dart";
 import "package:flutter/material.dart";
@@ -12,6 +14,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //State Variable
+  late Future<List<Contact>> _contactsList;
+
+  //Initial Mounting
+  void initState() {
+    super.initState();
+    void loadContacts() {
+      _contactsList = DatabaseHelper().getContacts();
+    }
+
+    loadContacts();
+  }
 
   //Home Screen
   Widget build(BuildContext context) {
@@ -114,8 +127,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                ContactTile(name: "John Doe", number: "+1 (555) 123-4567"),
-                ContactTile(name: "Jane Smith", number: "+1 (555) 987-6543"),
+                FutureBuilder<List<Contact>>(
+                  future: _contactsList,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No contacts found',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    } else {
+                      final contacts = snapshot.data!;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: contacts.length,
+                        itemBuilder: (context, index) {
+                          final contact = contacts[index];
+                          return ContactTile(
+                            name: contact.name, // Adjust based on your schema
+                            phone: contact.phone,
+                            imagePath: contact.imagePath!,
+                            email: contact.email,
+                            address: contact.address,
+                            id: contact.id,
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
                 Center(
                   child: GestureDetector(
                     onTap: () {

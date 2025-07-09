@@ -1,5 +1,7 @@
 // Imports
 import 'dart:io';
+import 'package:contactapp/db/contactSchema.dart';
+import 'package:contactapp/db/dbHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,18 +9,24 @@ import 'package:image_picker/image_picker.dart';
 //Creating the Stateful Widget
 class EditContactScreen extends StatefulWidget {
   //Data That Will Be Received
-  final File? image;
+  final String? imagePath;
+  final String name;
   final String phone;
   final String email;
   final String address;
+  final int? id;
+
   //Contructor With The Passed Values
-  EditContactScreen({
-    super.key,
-    this.image,
+  const EditContactScreen({
+    Key? key,
+    this.imagePath,
+    required this.name,
     required this.phone,
     required this.email,
     required this.address,
-  });
+    this.id,
+  }) : super(key: key);
+
   //Creating the state
   @override
   State<EditContactScreen> createState() => _EditContactScreenState();
@@ -31,8 +39,11 @@ class _EditContactScreenState extends State<EditContactScreen> {
   String? phone;
   String? email;
   String? address;
+  String? name;
+  int? id;
 
   //Controllers To Display The Value In The Form
+  late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController addressController;
@@ -40,10 +51,15 @@ class _EditContactScreenState extends State<EditContactScreen> {
   void initState() {
     super.initState();
     //Init code
-    image = widget.image;
-    phone = widget.phone;
+    if (widget.imagePath != null) {
+      image = File(widget.imagePath!);
+    }
+    name = widget.name;
     email = widget.email;
+    phone = widget.phone;
     address = widget.address;
+    id = widget.id;
+    nameController = TextEditingController(text: name);
     phoneController = TextEditingController(text: phone);
     emailController = TextEditingController(text: email);
     addressController = TextEditingController(text: address);
@@ -68,7 +84,7 @@ class _EditContactScreenState extends State<EditContactScreen> {
           scrollDirection: Axis.vertical,
           child: Container(
             width: double.infinity,
-            height: 680,
+            height: 740,
             color: Colors.black,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -179,6 +195,52 @@ class _EditContactScreenState extends State<EditContactScreen> {
                         ),
                       ),
                     ),
+                SizedBox(height: 20),
+                Container(
+                  width: 300,
+                  child: TextField(
+                    controller: nameController,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 15.15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        name = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: phone,
+                      hintStyle: GoogleFonts.inter(
+                        fontSize: 15.15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blueAccent,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person,
+                        size: 22,
+                        color: Colors.blueAccent,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: BorderSide(
+                          color: Colors.blueAccent, // Your desired color
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: Colors.blueAccent,
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: Colors.blueGrey.withOpacity(0.2),
+                      filled: true,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 20),
                 Container(
                   width: 300,
@@ -322,7 +384,18 @@ class _EditContactScreenState extends State<EditContactScreen> {
                 ),
                 SizedBox(height: 35),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    var contact = Contact(
+                      id: widget.id,
+                      name: nameController.text,
+                      phone: phoneController.text,
+                      email: emailController.text,
+                      address: addressController.text,
+                      imagePath: image?.path,
+                    );
+                    await DatabaseHelper().updateContact(contact);
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     width: 260,
                     height: 55,

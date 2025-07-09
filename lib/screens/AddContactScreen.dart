@@ -1,9 +1,9 @@
-//Imports
-
-// ignore_for_file: unnecessary_null_comparison, unused_element
+// Imports
+// ignore_for_file: unnecessary_null_comparison, unused_element, file_names
 
 import 'dart:io';
-
+import 'package:contactapp/db/contactSchema.dart';
+import 'package:contactapp/db/dbHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +20,8 @@ class _AddContactScreenState extends State<AddContactScreen> {
   String phone = "";
   String email = "";
   String address = "";
+  String name = "";
+  String imagePath = "";
   //File Functionality
   File? _image;
   final _picker = ImagePicker();
@@ -28,6 +30,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        imagePath = pickedFile.path;
       });
     }
   }
@@ -42,7 +45,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
           scrollDirection: Axis.vertical,
           child: Container(
             width: double.infinity,
-            height: 680,
+            height: 740,
             color: Colors.black,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -153,6 +156,51 @@ class _AddContactScreenState extends State<AddContactScreen> {
                         ),
                       ),
                     ),
+                SizedBox(height: 20),
+                Container(
+                  width: 300,
+                  child: TextField(
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 15.15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        name = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Add a name",
+                      hintStyle: GoogleFonts.inter(
+                        fontSize: 15.15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.greenAccent,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person,
+                        size: 22,
+                        color: Colors.greenAccent,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: BorderSide(
+                          color: Colors.greenAccent, // Your desired color
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide(
+                          color: Colors.greenAccent,
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: Colors.blueGrey.withOpacity(0.2),
+                      filled: true,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 20),
                 Container(
                   width: 300,
@@ -293,7 +341,17 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 ),
                 SizedBox(height: 35),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    var contact = Contact(
+                      imagePath: imagePath,
+                      name: name,
+                      phone: phone,
+                      email: email,
+                      address: address,
+                    );
+                    await DatabaseHelper().insertContact(contact);
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     width: 260,
                     height: 55,
